@@ -176,7 +176,7 @@
       }
 
       .results-card {
-        min-height: 220px;
+        min-height: 260px;
         display: flex;
         flex-direction: column;
         gap: 1rem;
@@ -234,55 +234,85 @@
         flex-direction: column;
       }
 
-      .live-guide {
-        margin: 0 6vw 3rem;
+      .live-console {
+        grid-column: 1 / -1;
+        background: var(--panel-strong);
       }
 
-      .guide-steps {
-        counter-reset: steps;
+      .console-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 1.5rem;
-        list-style: none;
-        padding: 0;
-        margin: 2rem 0 0;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
       }
 
-      .guide-steps li {
-        border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        background: rgba(255, 255, 255, 0.03);
-        padding: 1.25rem;
-        position: relative;
+      .console-card {
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 1rem;
+        background: rgba(4, 6, 16, 0.45);
+        transition: border 0.2s;
       }
 
-      .guide-steps li::before {
-        counter-increment: steps;
-        content: counter(steps);
-        position: absolute;
-        top: -15px;
-        left: 20px;
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--accent), var(--aqua));
-        color: #05060f;
-        font-weight: 700;
-        display: grid;
-        place-items: center;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      .console-card h3 {
+        margin: 0;
+        font-size: 1rem;
       }
 
-      .code-block {
-        background: rgba(0, 0, 0, 0.45);
-        border-radius: 12px;
-        padding: 0.85rem;
+      .card-note {
+        margin: 0.6rem 0 0;
+        opacity: 0.88;
+        font-size: 0.95rem;
+      }
+
+      .console-card[data-state="info"] {
+        border-color: rgba(123, 92, 255, 0.45);
+      }
+
+      .console-card[data-state="positive"] {
+        border-color: rgba(47, 213, 255, 0.65);
+      }
+
+      .console-card[data-state="warning"] {
+        border-color: rgba(255, 200, 87, 0.65);
+      }
+
+      .console-card[data-state="error"] {
+        border-color: rgba(255, 99, 99, 0.75);
+      }
+
+      .console-card code {
         font-family: "IBM Plex Mono", "Fira Code", monospace;
         font-size: 0.85rem;
-        line-height: 1.4;
-        overflow-x: auto;
+      }
+
+      .live-note-block {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.04);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        margin-top: 0.75rem;
+      }
+
+      .live-note-block h3 {
+        margin-top: 0;
+        margin-bottom: 0.4rem;
+      }
+
+      .live-note-block ul {
+        margin: 0;
+        padding-left: 1.1rem;
+      }
+
+      .live-note-block li {
+        margin-bottom: 0.2rem;
+      }
+
+      .ai-summary {
+        margin-top: 1rem;
+        border-left: 3px solid var(--accent);
+        padding-left: 1rem;
+        opacity: 0.9;
       }
 
       .toggle {
@@ -322,8 +352,8 @@
       </p>
       <h1>Sky Mystery Decoder</h1>
       <p class="tagline">
-        Type nothing. Tap clues. Our friendly logic engine (and optional live
-        data hooks) explains what you really saw above the horizon — no aliens
+        Type nothing. Tap clues. Our friendly logic engine (plus live data
+        hooks) explains what you really saw above the horizon — no aliens
         required.
       </p>
     </header>
@@ -420,6 +450,68 @@
         </div>
       </section>
 
+      <section class="live-console">
+        <h2>Live data console</h2>
+        <p style="margin: 0">
+          Every report now kicks off real lookups: geocoding, weather,
+          satellites, launches, auroras, aircraft, and an optional GPT summary.
+        </p>
+        <div class="console-grid">
+          <article class="console-card" data-card="location">
+            <h3>Location lock</h3>
+            <p class="card-note">Waiting for a sighting.</p>
+          </article>
+          <article class="console-card" data-card="weather">
+            <h3>Weather service</h3>
+            <p class="card-note">No lookup yet.</p>
+          </article>
+          <article class="console-card" data-card="satellite">
+            <h3>Starlink sweep</h3>
+            <p class="card-note">Starlink and other satellites checked here.</p>
+          </article>
+          <article class="console-card" data-card="rocket">
+            <h3>Launch calendar</h3>
+            <p class="card-note">Pulls The Space Devs feed after submission.</p>
+          </article>
+          <article class="console-card" data-card="aircraft">
+            <h3>Aircraft bubble</h3>
+            <p class="card-note">
+              Paste an AirLabs / ADS-B API key to unlock flight lookups.
+            </p>
+          </article>
+          <article class="console-card" data-card="aurora">
+            <h3>Aurora monitor</h3>
+            <p class="card-note">NOAA Kp alerts land here.</p>
+          </article>
+          <article class="console-card" data-card="ai">
+            <h3>GPT co-pilot</h3>
+            <p class="card-note">
+              Set <code>API_KEYS.openAi</code> in the script for instant
+              write-ups.
+            </p>
+          </article>
+          <article class="console-card" data-card="keys">
+            <h3>API key checklist</h3>
+            <p class="card-note">
+              Open <strong>index.html</strong> and scroll to the script’s top.
+              Replace the placeholders inside the <code>API_KEYS</code> object:
+            </p>
+            <ul style="margin: 0.5rem 0 0 1rem; padding: 0; opacity: 0.85">
+              <li>
+                <code>API_KEYS.airLabs</code> → AirLabs / ADS-B Exchange key
+              </li>
+              <li>
+                <code>API_KEYS.openAi</code> → OpenAI key for GPT summaries
+              </li>
+            </ul>
+            <p class="card-note" style="margin-top: 0.5rem">
+              Keep keys server-side for production; this page exposes them only
+              for local demos.
+            </p>
+          </article>
+        </div>
+      </section>
+
       <section>
         <h2>Usual suspects on watch</h2>
         <div class="info-grid">
@@ -473,19 +565,18 @@
         </div>
         <div class="toggle">
           <span>Weather + aurora feed</span>
-          <small
-            >Solar storm alerts and lightning maps explain glows
-            instantly.</small
-          >
+          <small>
+            Solar storm alerts and lightning maps explain glows instantly.
+          </small>
         </div>
       </section>
 
       <section class="live-guide">
         <h2>How to wire in real live data</h2>
         <p>
-          Want the explainer to double-check itself? Use this mini playbook to
-          turn the text clues into coordinates, compare the sky against real
-          telemetry, then feed the context into the scoring logic above.
+          Want the explainer to double-check itself? Use this playbook to turn
+          text clues into coordinates, compare the sky against real telemetry,
+          then feed the context into the scoring logic above.
         </p>
         <ol class="guide-steps">
           <li>
@@ -496,92 +587,69 @@
             </p>
             <pre class="code-block"><code>async function geocode(location) {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
-  const [hit] = await fetch(url, { headers: { 'User-Agent': 'NotAliens demo' } }).then((r) =&gt; r.json());
+  const [hit] = await fetch(url, { headers: { 'User-Agent': 'NotAliens demo' } }).then((r) => r.json());
   return hit ? { lat: Number(hit.lat), lon: Number(hit.lon) } : null;
 }</code></pre>
           </li>
           <li>
-            <h3>Check satellites &amp; launches</h3>
+            <h3>Compare live sky conditions</h3>
+            <p>
+              Services like Open-Meteo and NOAA’s Kp feed are free and don’t
+              need keys. Feed those snapshots back into the scoring engine.
+            </p>
+            <pre
+              class="code-block"
+            ><code>const weather = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=cloudcover&current_weather=true`).then((r) => r.json());
+const kpFeed = await fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json').then((r) => r.json());</code></pre>
+          </li>
+          <li>
+            <h3>Check satellites & launches</h3>
             <p>
               Pull the current Starlink TLE set (or Launch Library 2 schedule)
-              and compute passes around the timestamp using an SGP4 helper such
-              as <code>satellite.js</code>.
+              and compute passes around the timestamp using
+              <code>satellite.js</code>.
             </p>
             <pre
               class="code-block"
-            ><code>import { propagate, gstime } from 'satellite.js';
-const tle = await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&amp;FORMAT=json').then((r) =&gt; r.json());
-// Run propagate() for each TLE, compare the resulting az/el with your geocoded lat/lon and reportForm time.</code></pre>
+            ><code>import { twoline2satrec, propagate, gstime, eciToEcf, ecfToLookAngles } from 'satellite.js';
+const tleList = await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=json').then((r) => r.json());
+const gmst = gstime(observedDate);
+// Iterate, propagate, then flag any satellite where elevation &gt; 15° during the sighting.</code></pre>
           </li>
           <li>
-            <h3>Cross-check aircraft</h3>
+            <h3>Plug in aircraft + GPT helper</h3>
             <p>
-              Services such as AirLabs, AeroAPI, or ADS-B Exchange provide
-              bounding-box queries so you can spot planes / helicopters that
-              match the duration.
+              Drop your keys inside the <code>API_KEYS</code> object in the
+              script:
             </p>
-            <pre
-              class="code-block"
-            ><code>const flights = await fetch(`https://airlabs.co/api/v9/flights?api_key=YOUR_KEY&amp;bbox=${bboxFrom(lat, lon)}`).then((r) =&gt; r.json());
-const hovering = flights.response.filter((plane) =&gt; plane.dir &lt; 15 || plane.speed &lt; 60);</code></pre>
-          </li>
-          <li>
-            <h3>Layer in weather + aurora</h3>
+            <pre class="code-block"><code>const API_KEYS = {
+  airLabs: 'YOUR_AIRLABS_API_KEY', // Aircraft bubble lookups
+  openAi: 'YOUR_OPENAI_API_KEY',   // GPT summary of the evidence
+};</code></pre>
             <p>
-              Visibility, cloud height, Kp index, or auroral oval probability
-              all help explain glowing clouds.
+              Aircraft hits add bonus confidence to the drone / plane suspects,
+              while GPT stitches everything into a friendly explanation.
             </p>
-            <pre
-              class="code-block"
-            ><code>const meteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&amp;longitude=${lon}&amp;hourly=cloudcover,visibility&amp;current_weather=true`).then((r) =&gt; r.json());
-const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json').then((r) =&gt; r.json());</code></pre>
           </li>
         </ol>
-        <p>
-          Tie it together by calling a helper (for example,
-          <code
-            >const live = await collectLiveInsights(location,
-            observationDate);</code
-          >) inside the existing <code>reportForm</code> submit handler, then
-          boost suspect scores whenever a live dataset confirms the same
-          direction or timing. The UI above will immediately feel “smart”
-          because it is using the same feeds investigators trust.
-        </p>
       </section>
     </main>
 
-    <section style="padding: 3rem 6vw">
-      <div class="info-grid">
-        <article class="mini-card">
-          <h3>How the logic works</h3>
-          <p>
-            We blend your checkbox clues with time-of-day and sky conditions.
-            That gets scored against curated profiles for satellites, planes,
-            rockets, weather optics, and astronomy. The top match is explained
-            in plain language with a bonus fact so you walk away smarter.
-          </p>
-        </article>
-        <article class="mini-card">
-          <h3>Want a GPT assist?</h3>
-          <p>
-            Plug in your own OpenAI key to let a custom GPT summarize witness
-            reports, scan NOTAMs, or write a fun recap you can share with
-            friends.
-          </p>
-        </article>
-        <article class="mini-card">
-          <h3>Keep learning</h3>
-          <p>
-            Dive into aurora forecasts, meteor calendars, and beginner astronomy
-            guides so the next sighting becomes a science flex.
-          </p>
-        </article>
-      </div>
-    </section>
+    <footer>
+      Built for curious sky-watchers who want answers, not conspiracy theories.
+      Powered by open data, optional APIs, and a healthy dose of curiosity.
+    </footer>
 
-    <footer>Curiosity welcomed. Aliens debunked.</footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.2/dist/satellite.min.js"></script>
     <script>
+      // 🔑 Replace the placeholders below with your own keys when you want to
+      // enable aircraft lookups or GPT summaries. Keep real keys server-side in
+      // production; this inline demo is for local experimentation.
+      const API_KEYS = {
+        airLabs: "PASTE_AIRLABS_API_KEY_HERE",
+        openAi: "PASTE_OPENAI_API_KEY_HERE",
+      };
+
       const suspects = [
         {
           id: "starlink",
@@ -663,6 +731,38 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
 
       const resultBody = document.getElementById("resultBody");
       const reportForm = document.getElementById("reportForm");
+      const consoleTargets = {};
+      document.querySelectorAll(".console-card").forEach((card) => {
+        const name = card.dataset.card;
+        if (!name) return;
+        const target = card.querySelector(".card-note");
+        if (target) {
+          consoleTargets[name] = { card, target };
+        }
+      });
+
+      const defaultCardMessages = {
+        location: "Waiting for a sighting.",
+        weather: "No lookup yet.",
+        satellite: "Starlink and other satellites checked here.",
+        rocket: "Pulls The Space Devs feed after submission.",
+        aircraft: "Paste an AirLabs / ADS-B API key to unlock flight lookups.",
+        aurora: "NOAA Kp alerts land here.",
+        ai: "Set API_KEYS.openAi in the script for instant write-ups.",
+      };
+
+      function resetLiveConsole() {
+        Object.entries(defaultCardMessages).forEach(([key, message]) => {
+          setCardMessage(key, message, "neutral");
+        });
+      }
+
+      function setCardMessage(name, message, tone = "neutral") {
+        const entry = consoleTargets[name];
+        if (!entry) return;
+        entry.target.innerHTML = message;
+        entry.card.dataset.state = tone;
+      }
 
       function describeTime(date) {
         const hour = date.getHours();
@@ -692,10 +792,10 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
         return score;
       }
 
-      function formatResult(best, ranked, details) {
+      function formatResult(best, ranked, details, liveNotes, aiSummary) {
         const funFact = funFacts[Math.floor(Math.random() * funFacts.length)];
         const confidence =
-          best.score > 4 ? "High" : best.score > 2 ? "Medium" : "Curious";
+          best.score > 5 ? "High" : best.score > 3 ? "Medium" : "Curious";
 
         return `
           <div>
@@ -704,6 +804,18 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
             <p>${best.item.explanation}</p>
             <p><strong>Why it fits:</strong> ${details}</p>
             <p><em>Bonus fact:</em> ${best.item.fact}</p>
+            ${
+              liveNotes.length
+                ? `<div class="live-note-block"><h3>Live evidence</h3><ul>${liveNotes
+                    .map((note) => `<li>${note}</li>`)
+                    .join("")}</ul></div>`
+                : ""
+            }
+            ${
+              aiSummary
+                ? `<div class="ai-summary"><strong>GPT co-pilot says:</strong> ${aiSummary}</div>`
+                : ""
+            }
           </div>
           <div>
             <h3>Runner-ups</h3>
@@ -712,7 +824,9 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
                 .slice(1, 4)
                 .map(
                   (r) =>
-                    `<li><strong>${r.item.name}:</strong> score ${r.score.toFixed(1)}</li>`,
+                    `<li><strong>${r.item.name}:</strong> score ${r.score.toFixed(
+                      1,
+                    )}</li>`,
                 )
                 .join("")}
             </ul>
@@ -721,7 +835,181 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
         `;
       }
 
-      reportForm.addEventListener("submit", (event) => {
+      async function geocodeLocation(location) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+        const headers = { "User-Agent": "NotAliens sky decoder" };
+        const [hit] = await fetch(url, { headers }).then((response) =>
+          response.json(),
+        );
+        return hit ? { lat: Number(hit.lat), lon: Number(hit.lon) } : null;
+      }
+
+      function findClosestIndex(times, target) {
+        let closest = 0;
+        let minDiff = Infinity;
+        times.forEach((time, index) => {
+          const diff = Math.abs(time - target);
+          if (diff < minDiff) {
+            minDiff = diff;
+            closest = index;
+          }
+        });
+        return closest;
+      }
+
+      function describeCloudCover(value) {
+        if (value == null) return "No cloud data";
+        if (value < 20) return "crystal clear skies";
+        if (value < 60) return "patchy clouds";
+        return "cloud deck overhead";
+      }
+
+      async function fetchWeatherSummary(coords, observationDate) {
+        const params = new URLSearchParams({
+          latitude: coords.lat,
+          longitude: coords.lon,
+          hourly: "cloudcover,precipitation_probability",
+          current_weather: "true",
+          timezone: "auto",
+        });
+        const url = `https://api.open-meteo.com/v1/forecast?${params.toString()}`;
+        const data = await fetch(url).then((response) => response.json());
+        if (!data.hourly) return null;
+        const times = data.hourly.time.map((iso) => new Date(iso));
+        const index = findClosestIndex(times, observationDate);
+        const cloudCover = data.hourly.cloudcover?.[index];
+        const precip = data.hourly.precipitation_probability?.[index];
+        return {
+          cloudCover,
+          precip,
+          summary: `${describeCloudCover(cloudCover)} (cloud cover ${cloudCover ?? "?"}% / precip ${precip ?? "?"}%)`,
+        };
+      }
+
+      async function fetchRocketLaunchMatches(observationDate) {
+        const url =
+          "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=5&ordering=net";
+        const data = await fetch(url).then((response) => response.json());
+        if (!data.results) return null;
+        const matches = data.results
+          .map((launch) => ({
+            launch,
+            diffHours: Math.abs(new Date(launch.net) - observationDate) / 36e5,
+          }))
+          .filter((entry) => entry.diffHours < 4);
+        if (matches.length) return { status: "match", hit: matches[0] };
+        return { status: "none", next: data.results[0] };
+      }
+
+      async function fetchAuroraAlert() {
+        const url =
+          "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json";
+        const data = await fetch(url).then((response) => response.json());
+        if (!Array.isArray(data) || !data.length) return null;
+        const latest = data[data.length - 1];
+        return {
+          kp: Number(latest.kp_index),
+          time: new Date(latest.time_tag),
+        };
+      }
+
+      function describeKp(kp) {
+        if (kp >= 7) return "Severe geomagnetic storm";
+        if (kp >= 5) return "Strong aurora possible";
+        if (kp >= 4) return "Moderate aurora chance";
+        return "Quiet geomagnetic field";
+      }
+
+      async function lookupAircraft(coords) {
+        if (!API_KEYS.airLabs || API_KEYS.airLabs.startsWith("PASTE_")) {
+          return { status: "missing-key" };
+        }
+        const radiusKm = 120;
+        const url = `https://airlabs.co/api/v9/flights?api_key=${API_KEYS.airLabs}&lat=${coords.lat}&lng=${coords.lon}&distance=${radiusKm}`;
+        const data = await fetch(url).then((response) => response.json());
+        if (!data.response || !data.response.length) return { status: "none" };
+        return { status: "match", flight: data.response[0] };
+      }
+
+      async function checkStarlinkPass(coords, observationDate) {
+        if (!window.satellite) {
+          return { status: "error", message: "satellite.js not loaded" };
+        }
+        const response = await fetch(
+          "https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&FORMAT=json",
+        );
+        const tleList = await response.json();
+        const gmst = satellite.gstime(observationDate);
+        const observerGd = {
+          longitude: satellite.degreesToRadians(coords.lon),
+          latitude: satellite.degreesToRadians(coords.lat),
+          height: 0.02,
+        };
+        for (const entry of tleList.slice(0, 50)) {
+          const satrec = satellite.twoline2satrec(
+            entry.TLE_LINE1,
+            entry.TLE_LINE2,
+          );
+          const positionAndVelocity = satellite.propagate(
+            satrec,
+            observationDate,
+          );
+          const positionEci = positionAndVelocity.position;
+          if (!positionEci) continue;
+          const positionEcf = satellite.eciToEcf(positionEci, gmst);
+          const lookAngles = satellite.ecfToLookAngles(observerGd, positionEcf);
+          const elevation = satellite.radiansToDegrees(lookAngles.elevation);
+          if (elevation > 15) {
+            return {
+              status: "match",
+              name: entry.OBJECT_NAME,
+              elevation,
+              azimuth: satellite.radiansToDegrees(lookAngles.azimuth),
+            };
+          }
+        }
+        return { status: "none" };
+      }
+
+      async function generateAiSummary(payload) {
+        if (!API_KEYS.openAi || API_KEYS.openAi.startsWith("PASTE_")) {
+          return null;
+        }
+        const response = await fetch(
+          "https://api.openai.com/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${API_KEYS.openAi}`,
+            },
+            body: JSON.stringify({
+              model: "gpt-4o-mini",
+              messages: [
+                {
+                  role: "system",
+                  content:
+                    "You are NotAliens' explainer bot. Summarize the evidence in two friendly sentences.",
+                },
+                {
+                  role: "user",
+                  content: `Here is the structured context: ${JSON.stringify(payload)}`,
+                },
+              ],
+              temperature: 0.4,
+            }),
+          },
+        );
+        if (!response.ok) {
+          throw new Error("OpenAI request failed");
+        }
+        const data = await response.json();
+        return data.choices?.[0]?.message?.content?.trim() ?? null;
+      }
+
+      resetLiveConsole();
+
+      reportForm.addEventListener("submit", async (event) => {
         event.preventDefault();
         const form = new FormData(reportForm);
         const location = form.get("location").trim();
@@ -738,7 +1026,7 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
           });
 
         const timeSlot = describeTime(observationDate);
-        const ranked = suspects
+        let ranked = suspects
           .map((item) => ({
             item,
             score:
@@ -747,20 +1035,253 @@ const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_l
           }))
           .sort((a, b) => b.score - a.score);
 
-        const best = ranked[0];
         const detailParts = [];
         if (traits.size)
           detailParts.push(
-            `${traits.size} trait(s) lined up with ${best.item.name}`,
+            `${traits.size} trait(s) lined up with ${ranked[0].item.name}`,
           );
         detailParts.push(`Timing looked like ${timeSlot}`);
         detailParts.push(`Sky reported as ${sky}`);
         if (notes) detailParts.push(`Extra clue: “${notes}”`);
 
+        const liveNotes = [];
+        const liveContext = { location, time: observationDate.toISOString() };
+        const adjustments = [];
+
+        resultBody.innerHTML = "<p>Crunching live data...</p>";
+        resetLiveConsole();
+        setCardMessage("location", "Resolving coordinates...", "info");
+
+        let coords = null;
+        try {
+          coords = await geocodeLocation(location);
+        } catch (error) {
+          console.error(error);
+        }
+
+        if (coords) {
+          liveContext.coords = coords;
+          setCardMessage(
+            "location",
+            `📍 ${coords.lat.toFixed(2)}, ${coords.lon.toFixed(2)} resolved via OpenStreetMap`,
+            "positive",
+          );
+        } else {
+          setCardMessage(
+            "location",
+            "Could not geocode that place. Spell it a bit more?",
+            "error",
+          );
+        }
+
+        if (coords) {
+          setCardMessage("weather", "Calling Open-Meteo...", "info");
+          try {
+            const weather = await fetchWeatherSummary(coords, observationDate);
+            liveContext.weather = weather;
+            if (weather) {
+              setCardMessage("weather", `☁️ ${weather.summary}`, "positive");
+              liveNotes.push(`Weather service measured ${weather.summary}.`);
+            } else {
+              setCardMessage(
+                "weather",
+                "No weather data returned for those coordinates.",
+                "warning",
+              );
+            }
+          } catch (error) {
+            console.error(error);
+            setCardMessage("weather", "Weather API request failed.", "error");
+          }
+
+          setCardMessage("satellite", "Checking Starlink positions...", "info");
+          try {
+            const starlink = await checkStarlinkPass(coords, observationDate);
+            liveContext.starlink = starlink;
+            if (starlink?.status === "match") {
+              setCardMessage(
+                "satellite",
+                `✨ ${starlink.name} was ${starlink.elevation.toFixed(
+                  1,
+                )}° high at the sighting time.`,
+                "positive",
+              );
+              liveNotes.push(
+                `Starlink candidate ${starlink.name} was ~${starlink.elevation.toFixed(
+                  0,
+                )}° above the horizon at observation time.`,
+              );
+              adjustments.push({ id: "starlink", delta: 2.5 });
+            } else {
+              setCardMessage(
+                "satellite",
+                "No bright Starlink passes detected at that minute.",
+                "warning",
+              );
+            }
+          } catch (error) {
+            console.error(error);
+            setCardMessage(
+              "satellite",
+              "Satellite pass check failed.",
+              "error",
+            );
+          }
+
+          setCardMessage("aircraft", "Looking for ADS-B hits...", "info");
+          try {
+            const aircraft = await lookupAircraft(coords);
+            liveContext.aircraft = aircraft;
+            if (aircraft?.status === "missing-key") {
+              setCardMessage(
+                "aircraft",
+                "Paste your AirLabs / ADS-B API key inside API_KEYS.airLabs to enable this check.",
+                "warning",
+              );
+            } else if (aircraft?.status === "match") {
+              const call =
+                aircraft.flight?.flight_iata ||
+                aircraft.flight?.hex ||
+                "aircraft";
+              setCardMessage(
+                "aircraft",
+                `✈️ ${call} was inside ~120 km during the report window.`,
+                "positive",
+              );
+              liveNotes.push(
+                `ADS-B bubble spotted flight ${call} in the area.`,
+              );
+              adjustments.push({ id: "plane", delta: 1.5 });
+              adjustments.push({ id: "drone", delta: 0.5 });
+            } else {
+              setCardMessage(
+                "aircraft",
+                "No aircraft returned for that bubble.",
+                "warning",
+              );
+            }
+          } catch (error) {
+            console.error(error);
+            setCardMessage("aircraft", "Aircraft lookup failed.", "error");
+          }
+        } else {
+          ["weather", "satellite", "aircraft"].forEach((card) =>
+            setCardMessage(
+              card,
+              "Need a resolved location before this check runs.",
+              "warning",
+            ),
+          );
+        }
+
+        setCardMessage("rocket", "Pulling launch calendar...", "info");
+        try {
+          const launch = await fetchRocketLaunchMatches(observationDate);
+          liveContext.rocket = launch;
+          if (launch?.status === "match") {
+            const name = launch.hit.launch.name;
+            setCardMessage(
+              "rocket",
+              `🚀 ${name} launched within ±${launch.hit.diffHours.toFixed(
+                1,
+              )} h of this report.`,
+              "positive",
+            );
+            liveNotes.push(
+              `${name} launched within about ${launch.hit.diffHours.toFixed(
+                1,
+              )} hours of your sighting.`,
+            );
+            adjustments.push({ id: "rocket", delta: 2.2 });
+          } else if (launch?.next) {
+            setCardMessage(
+              "rocket",
+              `Next launch: ${launch.next.name} (${new Date(
+                launch.next.net,
+              ).toLocaleString()}).`,
+              "neutral",
+            );
+          } else {
+            setCardMessage("rocket", "No launches in that window.", "warning");
+          }
+        } catch (error) {
+          console.error(error);
+          setCardMessage("rocket", "Launch lookup failed.", "error");
+        }
+
+        setCardMessage("aurora", "Consulting NOAA...", "info");
+        try {
+          const aurora = await fetchAuroraAlert();
+          liveContext.aurora = aurora;
+          if (aurora) {
+            setCardMessage(
+              "aurora",
+              `🌌 Kp=${aurora.kp.toFixed(1)} (${describeKp(aurora.kp)}).`,
+              aurora.kp >= 4 ? "positive" : "neutral",
+            );
+            if (aurora.kp >= 4) {
+              liveNotes.push(
+                `NOAA measured Kp ${aurora.kp.toFixed(
+                  1,
+                )} around ${aurora.time.toUTCString()}.`,
+              );
+              adjustments.push({ id: "aurora", delta: 1.5 });
+            }
+          } else {
+            setCardMessage("aurora", "No Kp data returned.", "warning");
+          }
+        } catch (error) {
+          console.error(error);
+          setCardMessage("aurora", "Aurora feed failed.", "error");
+        }
+
+        adjustments.forEach(({ id, delta }) => {
+          const entry = ranked.find((r) => r.item.id === id);
+          if (entry) entry.score += delta;
+        });
+        ranked.sort((a, b) => b.score - a.score);
+        const best = ranked[0];
+
+        if (coords) {
+          detailParts.push(
+            `Geocoded to ${coords.lat.toFixed(2)}, ${coords.lon.toFixed(2)}`,
+          );
+        }
+
+        let aiSummary = null;
+        try {
+          aiSummary = await generateAiSummary({
+            bestGuess: best.item.name,
+            detailParts,
+            liveNotes,
+            timeSlot,
+            traits: Array.from(traits),
+            context: liveContext,
+          });
+          if (aiSummary) {
+            setCardMessage(
+              "ai",
+              `🤖 GPT summary ready: ${aiSummary}`,
+              "positive",
+            );
+          } else if (!API_KEYS.openAi || API_KEYS.openAi.startsWith("PASTE_")) {
+            setCardMessage(
+              "ai",
+              "Paste your OpenAI API key inside API_KEYS.openAi to unlock GPT summaries.",
+              "warning",
+            );
+          }
+        } catch (error) {
+          console.error(error);
+          setCardMessage("ai", "GPT request failed.", "error");
+        }
+
         resultBody.innerHTML = formatResult(
           best,
           ranked,
           detailParts.join(", "),
+          liveNotes,
+          aiSummary,
         );
       });
     </script>
