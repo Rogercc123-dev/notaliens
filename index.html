@@ -234,6 +234,57 @@
         flex-direction: column;
       }
 
+      .live-guide {
+        margin: 0 6vw 3rem;
+      }
+
+      .guide-steps {
+        counter-reset: steps;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0 0;
+      }
+
+      .guide-steps li {
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1.25rem;
+        position: relative;
+      }
+
+      .guide-steps li::before {
+        counter-increment: steps;
+        content: counter(steps);
+        position: absolute;
+        top: -15px;
+        left: 20px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--aqua));
+        color: #05060f;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      }
+
+      .code-block {
+        background: rgba(0, 0, 0, 0.45);
+        border-radius: 12px;
+        padding: 0.85rem;
+        font-family: "IBM Plex Mono", "Fira Code", monospace;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        overflow-x: auto;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin-top: 0.75rem;
+      }
+
       .toggle {
         display: flex;
         justify-content: space-between;
@@ -427,6 +478,75 @@
             instantly.</small
           >
         </div>
+      </section>
+
+      <section class="live-guide">
+        <h2>How to wire in real live data</h2>
+        <p>
+          Want the explainer to double-check itself? Use this mini playbook to
+          turn the text clues into coordinates, compare the sky against real
+          telemetry, then feed the context into the scoring logic above.
+        </p>
+        <ol class="guide-steps">
+          <li>
+            <h3>Geocode the sighting</h3>
+            <p>
+              Convert the free-form location text into latitude / longitude so
+              every downstream API knows where to look.
+            </p>
+            <pre class="code-block"><code>async function geocode(location) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location)}`;
+  const [hit] = await fetch(url, { headers: { 'User-Agent': 'NotAliens demo' } }).then((r) =&gt; r.json());
+  return hit ? { lat: Number(hit.lat), lon: Number(hit.lon) } : null;
+}</code></pre>
+          </li>
+          <li>
+            <h3>Check satellites &amp; launches</h3>
+            <p>
+              Pull the current Starlink TLE set (or Launch Library 2 schedule)
+              and compute passes around the timestamp using an SGP4 helper such
+              as <code>satellite.js</code>.
+            </p>
+            <pre
+              class="code-block"
+            ><code>import { propagate, gstime } from 'satellite.js';
+const tle = await fetch('https://celestrak.org/NORAD/elements/gp.php?GROUP=starlink&amp;FORMAT=json').then((r) =&gt; r.json());
+// Run propagate() for each TLE, compare the resulting az/el with your geocoded lat/lon and reportForm time.</code></pre>
+          </li>
+          <li>
+            <h3>Cross-check aircraft</h3>
+            <p>
+              Services such as AirLabs, AeroAPI, or ADS-B Exchange provide
+              bounding-box queries so you can spot planes / helicopters that
+              match the duration.
+            </p>
+            <pre
+              class="code-block"
+            ><code>const flights = await fetch(`https://airlabs.co/api/v9/flights?api_key=YOUR_KEY&amp;bbox=${bboxFrom(lat, lon)}`).then((r) =&gt; r.json());
+const hovering = flights.response.filter((plane) =&gt; plane.dir &lt; 15 || plane.speed &lt; 60);</code></pre>
+          </li>
+          <li>
+            <h3>Layer in weather + aurora</h3>
+            <p>
+              Visibility, cloud height, Kp index, or auroral oval probability
+              all help explain glowing clouds.
+            </p>
+            <pre
+              class="code-block"
+            ><code>const meteo = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&amp;longitude=${lon}&amp;hourly=cloudcover,visibility&amp;current_weather=true`).then((r) =&gt; r.json());
+const aurora = await fetch('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json').then((r) =&gt; r.json());</code></pre>
+          </li>
+        </ol>
+        <p>
+          Tie it together by calling a helper (for example,
+          <code
+            >const live = await collectLiveInsights(location,
+            observationDate);</code
+          >) inside the existing <code>reportForm</code> submit handler, then
+          boost suspect scores whenever a live dataset confirms the same
+          direction or timing. The UI above will immediately feel “smart”
+          because it is using the same feeds investigators trust.
+        </p>
       </section>
     </main>
 
